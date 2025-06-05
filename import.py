@@ -4,7 +4,7 @@ import json
 connection = psycopg2.connect(database="postgres", user="postgres", password="docker", host="localhost", port="5432")
 cursor = connection.cursor()
 
-with open('C:/Users/diego/Desktop/www/import-json-questoes/questoes.json','r', encoding='utf-8') as json_file:
+with open('./questoes.json','r', encoding='utf-8') as json_file:
     file_contents = json_file.read()
     data = json.loads(file_contents)
     count = 1
@@ -12,13 +12,13 @@ with open('C:/Users/diego/Desktop/www/import-json-questoes/questoes.json','r', e
     for item in data:
         
         cursor.execute(
-                "INSERT INTO questions (id, title, discipline, language, year, context, correct_alternative) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                (count,item['title'], item['discipline'], item['language'], item['year'],item['context'], item['correctAlternative'])
+                "INSERT INTO questions (id, title, discipline, language, year, context, correct_alternative, introduction) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                (count,item['title'], item['discipline'], item['language'], item['year'],item['context'], item['correctAlternative'], item['alternativesIntroduction'])
             )
 
         for alternative in item['alternatives']:
-                if(alternative['file']):
-                      cursor.execute(
+                
+            cursor.execute(
                     "INSERT INTO alternatives (question_id, letter, text, is_correct, image) VALUES (%s, %s, %s, %s, %s)",
                     (count, alternative['letter'], alternative['text'], alternative['isCorrect'],alternative['file'])
                 )
